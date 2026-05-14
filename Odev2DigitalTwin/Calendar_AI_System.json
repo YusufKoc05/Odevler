@@ -1,0 +1,405 @@
+{
+  "name": "Calendar_AI_System",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "calendarId": {
+          "__rl": true,
+          "value": "b34a74fdb793dd0cb654a864028576ed61be554d5e8064a4ca767587352201ee@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "AI Takvim"
+        },
+        "triggerOn": "eventCreated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendarTrigger",
+      "typeVersion": 1,
+      "position": [
+        -368,
+        -128
+      ],
+      "id": "ce6412d3-c0e7-4390-8d65-18a1881dfa67",
+      "name": "Google Calendar Trigger",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "0DqA7Cgn544VhNsZ",
+          "name": "Google Calendar OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Sen bir Google Calendar analiz AI sistemisin.\n\nEtkinlik bilgileri:\n\nBaşlık:\n{{$json.summary}}\n\nAçıklama:\n{{$json.description}}\n\nBaşlangıç:\n{{$json.start.dateTime}}\n\nBitiş:\n{{$json.end.dateTime}}\n\nGörevlerin:\n\n1. Etkinliğin önem seviyesini belirle\n2. Önemliyse hafızaya kaydet\n3. Kategori oluştur\n4. Kullanıcıya kısa öneri ver\n\nKurallar:\n\n- Önemsiz etkinliklerde save=false\n- Toplantı, sınav, iş görüşmesi, randevu gibi etkinliklerde save=true\n- onem 1-10 arasında sayı olsun\n- Sadece JSON döndür\n\nJSON formatı:\n\n{\n \"save\": true,\n \"memory\": \"\",\n \"kategori\": \"\",\n \"onem\": 8,\n \"cevap\": \"\"\n}",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -160,
+        -128
+      ],
+      "id": "fab5e91b-9d6f-4abe-a31d-f10471aa81a1",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -240,
+        64
+      ],
+      "id": "fcca043f-5af0-4aab-8630-859f93204118",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "DyfxKzFfFudR57Za",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"save\": true,\n  \"memory\": \"Önemli toplantı etkinliği\",\n  \"kategori\": \"Toplantı\",\n  \"onem\": 8,\n  \"cevap\": \"Toplantı öncesi hazırlık yapmanız önerilir.\"\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        16,
+        80
+      ],
+      "id": "c48607b1-ab9b-40cb-a174-eb9e8983c967",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -64,
+        240
+      ],
+      "id": "b2108af3-444d-4b0a-af9c-9e4890594758",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "DyfxKzFfFudR57Za",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "2c2e08f0-239b-49f3-b734-16bdf4c7499d",
+              "leftValue": "={{$json.output.save}}",
+              "rightValue": "true",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "b584223f-dae5-4ece-a8bb-686485b14f29",
+              "leftValue": "={{ $json.output.onem }}",
+              "rightValue": 6,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        192,
+        -128
+      ],
+      "id": "bfe5a3bc-67b4-4819-92e0-7688447505d0",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "apphDpDGsHmRVNCC8",
+          "mode": "list",
+          "cachedResultName": "DigitalTwin_AI_System",
+          "cachedResultUrl": "https://airtable.com/apphDpDGsHmRVNCC8"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblRI1JIVai9SVIRj",
+          "mode": "list",
+          "cachedResultName": "Calendar_Events",
+          "cachedResultUrl": "https://airtable.com/apphDpDGsHmRVNCC8/tblRI1JIVai9SVIRj"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "SavedToMemory ": true,
+            "EventTitle": "={{$node[\"Google Calendar Trigger\"].json[\"summary\"]}}",
+            "StartTime": "={{$node[\"Google Calendar Trigger\"].json[\"start\"][\"dateTime\"] || $node[\"Google Calendar Trigger\"].json[\"start\"][\"date\"]}}",
+            "EndTime": "={{$node[\"Google Calendar Trigger\"].json[\"end\"][\"dateTime\"] || $node[\"Google Calendar Trigger\"].json[\"end\"][\"date\"]}}",
+            "Description": "={{$json.output.memory}}",
+            "Importance": "={{$json.output.onem}}",
+            "PreparationNote ": "={{$json.output.cevap}}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "EventTitle",
+              "displayName": "EventTitle",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "StartTime",
+              "displayName": "StartTime",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "EndTime",
+              "displayName": "EndTime",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Description",
+              "displayName": "Description",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Importance",
+              "displayName": "Importance",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "PreparationNote ",
+              "displayName": "PreparationNote ",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "SavedToMemory ",
+              "displayName": "SavedToMemory ",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        400,
+        -208
+      ],
+      "id": "0cc0dab5-6877-448b-9bef-02b45d372f3e",
+      "name": "Create a record",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AEmDHNHfSpYQRGvg",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "8476086508",
+        "text": "📅 Yeni Takvim Etkinliği  🗓 Etkinlik: {{$json.fields.EventTitle}}  ⭐ Önem: {{$json.fields.Importance}}/10  📝 Açıklama: {{$json.fields.Description}}  ⏰ Başlangıç: {{$json.fields.StartTime}}  ✅ Hazırlık: {{$json.fields.PreparationNote}}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        608,
+        -208
+      ],
+      "id": "84f69dc7-b279-460f-9c5e-74d78c421530",
+      "name": "Send a text message",
+      "webhookId": "3fa8f63f-04c9-4a8e-85b1-0550177cfc4d",
+      "credentials": {
+        "telegramApi": {
+          "id": "Nfc6jsHVIyt0ukOu",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Calendar Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Output Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Create a record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a record": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "0c198bcd-2793-4f05-aacb-738f472cd342",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "33da6ec3e0a540eab444625c7ceb296e1d3bdc29f4cc7300e24c90da22661083"
+  },
+  "id": "U9k1a2738p8JXDox",
+  "tags": []
+}

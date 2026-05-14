@@ -1,0 +1,400 @@
+{
+  "name": "Telegram_AI_Memory_System",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -720,
+        -208
+      ],
+      "id": "9be477ec-4845-4b4c-91f0-f0a690aa05a5",
+      "name": "Telegram Trigger",
+      "webhookId": "258c0980-a039-4d6e-985b-ccbaad8862aa",
+      "credentials": {
+        "telegramApi": {
+          "id": "Nfc6jsHVIyt0ukOu",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Sen bir Digital Twin AI sistemisin.\n\nKullanıcının mesajını analiz et.\n\nKurallar:\n\n- Eğer mesaj kişisel bilgi, duygu, hedef, plan, alışkanlık veya önemli bilgi içeriyorsa:\nsave=true\n\n- Önemsiz küçük konuşmaysa:\nsave=false\n\nKategori sadece şunlardan biri olabilir:\nDuygu\nHedef\nProje\nAliskanlik\nPlan\nKarar\nKisisel\nDiger\n\nÖnem puanı:\n1-10 arası sayı\n\nJSON dışında hiçbir şey yazma.\n\nKullanıcı mesajı:\n{{ $json.message.text }}",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -512,
+        -208
+      ],
+      "id": "0d761093-2811-4947-aaf6-bfc8cbab2f9f",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -656,
+        0
+      ],
+      "id": "6deb4bfc-264b-4946-aabe-2b87aa0eb0e2",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "DyfxKzFfFudR57Za",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"save\": true,\n  \"memory\": \"Kullanıcının önemli hafıza özeti\",\n  \"kategori\": \"Duygu\",\n  \"onem\": 7,\n  \"cevap\": \"AI cevabı\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -336,
+        0
+      ],
+      "id": "71025a13-7af9-41c8-8976-e0a735622ab7",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "95a35895-16a0-4d1d-9a04-381a2692215e",
+              "leftValue": "={{ $json.output.save }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "3e164b79-3769-4b0f-b170-71021e2b4d2f",
+              "leftValue": "={{ $json.output.onem }}",
+              "rightValue": 5,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -160,
+        -208
+      ],
+      "id": "6e6ca182-36d8-4c0a-8dff-41e094950c68",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "apphDpDGsHmRVNCC8",
+          "mode": "list",
+          "cachedResultName": "DigitalTwin_AI_System",
+          "cachedResultUrl": "https://airtable.com/apphDpDGsHmRVNCC8"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbln4ie1esloco8SH",
+          "mode": "list",
+          "cachedResultName": "DigitalTwin_Memory",
+          "cachedResultUrl": "https://airtable.com/apphDpDGsHmRVNCC8/tbln4ie1esloco8SH"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Memory": "={{$json.output.memory}}",
+            "Kategori": "={{$json.output.kategori}}",
+            "OnemSkoru": "={{$json.output.onem}}",
+            "AI_Cevap": "={{$json.output.cevap}}",
+            "Kaynak": "Telegram"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Memory",
+              "displayName": "Memory",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Kategori",
+              "displayName": "Kategori",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Duygu",
+                  "value": "Duygu"
+                },
+                {
+                  "name": "Hedef",
+                  "value": "Hedef"
+                },
+                {
+                  "name": "Proje",
+                  "value": "Proje"
+                },
+                {
+                  "name": "Aliskanlik",
+                  "value": "Aliskanlik"
+                },
+                {
+                  "name": "Plan",
+                  "value": "Plan"
+                },
+                {
+                  "name": "Karar",
+                  "value": "Karar"
+                },
+                {
+                  "name": "Kisisel",
+                  "value": "Kisisel"
+                },
+                {
+                  "name": "Diger",
+                  "value": "Diger"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "OnemSkoru",
+              "displayName": "OnemSkoru",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Kaynak",
+              "displayName": "Kaynak",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Telegram",
+                  "value": "Telegram"
+                },
+                {
+                  "name": "Gmail",
+                  "value": "Gmail"
+                },
+                {
+                  "name": "Drive",
+                  "value": "Drive"
+                },
+                {
+                  "name": "Calendar",
+                  "value": "Calendar"
+                },
+                {
+                  "name": "Manuel",
+                  "value": "Manuel"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Tarih",
+              "displayName": "Tarih",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "AI_Cevap",
+              "displayName": "AI_Cevap",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        48,
+        -304
+      ],
+      "id": "9ca41582-4e23-418c-a8bd-58b2368d1946",
+      "name": "Create a record",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AEmDHNHfSpYQRGvg",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{$node[\"Telegram Trigger\"].json[\"message\"][\"chat\"][\"id\"]}}",
+        "text": "={{$node[\"AI Agent\"].json[\"output\"][\"cevap\"]}}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        256,
+        -304
+      ],
+      "id": "9195f40c-d2d7-4eda-83f1-bf693b66999a",
+      "name": "Send a text message",
+      "webhookId": "dc42d11b-1071-4b94-a646-66b20f680f72",
+      "credentials": {
+        "telegramApi": {
+          "id": "Nfc6jsHVIyt0ukOu",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Create a record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a record": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "36cd8946-4076-4844-9f3b-bac11f022112",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "33da6ec3e0a540eab444625c7ceb296e1d3bdc29f4cc7300e24c90da22661083"
+  },
+  "id": "l10MHp6hk64XQkEg",
+  "tags": []
+}

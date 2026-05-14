@@ -1,0 +1,532 @@
+{
+  "name": "Dailyy_Weeklyy_Report_System",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 22
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -880,
+        -128
+      ],
+      "id": "b0293b17-758b-4af2-92e5-ce1af4ae9689",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "apphDpDGsHmRVNCC8",
+          "mode": "list",
+          "cachedResultName": "DigitalTwin_AI_System",
+          "cachedResultUrl": "https://airtable.com/apphDpDGsHmRVNCC8"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbln4ie1esloco8SH",
+          "mode": "list",
+          "cachedResultName": "DigitalTwin_Memory",
+          "cachedResultUrl": "https://airtable.com/apphDpDGsHmRVNCC8/tbln4ie1esloco8SH"
+        },
+        "returnAll": false,
+        "limit": 10,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        -720,
+        -352
+      ],
+      "id": "1d15f20e-2b04-41bf-8cf9-a516f928ede3",
+      "name": "Search records",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AEmDHNHfSpYQRGvg",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "apphDpDGsHmRVNCC8",
+          "mode": "list",
+          "cachedResultName": "DigitalTwin_AI_System",
+          "cachedResultUrl": "https://airtable.com/apphDpDGsHmRVNCC8"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblhZe7aH9XTZi9bK",
+          "mode": "list",
+          "cachedResultName": "Email_Analysis",
+          "cachedResultUrl": "https://airtable.com/apphDpDGsHmRVNCC8/tblhZe7aH9XTZi9bK"
+        },
+        "returnAll": false,
+        "limit": 10,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        -736,
+        32
+      ],
+      "id": "87163431-7aa7-461f-8a33-c0d08545e578",
+      "name": "Search records1",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AEmDHNHfSpYQRGvg",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "apphDpDGsHmRVNCC8",
+          "mode": "list",
+          "cachedResultName": "DigitalTwin_AI_System",
+          "cachedResultUrl": "https://airtable.com/apphDpDGsHmRVNCC8"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblaHIq7ojupyeZoF",
+          "mode": "list",
+          "cachedResultName": "Drive_Documents",
+          "cachedResultUrl": "https://airtable.com/apphDpDGsHmRVNCC8/tblaHIq7ojupyeZoF"
+        },
+        "returnAll": false,
+        "limit": 10,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        -480,
+        -112
+      ],
+      "id": "bb64ae3f-2419-4e0d-8079-a62c7d054d5d",
+      "name": "Search records2",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AEmDHNHfSpYQRGvg",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "apphDpDGsHmRVNCC8",
+          "mode": "list",
+          "cachedResultName": "DigitalTwin_AI_System",
+          "cachedResultUrl": "https://airtable.com/apphDpDGsHmRVNCC8"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblRI1JIVai9SVIRj",
+          "mode": "list",
+          "cachedResultName": "Calendar_Events",
+          "cachedResultUrl": "https://airtable.com/apphDpDGsHmRVNCC8/tblRI1JIVai9SVIRj"
+        },
+        "returnAll": false,
+        "limit": 10,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        -272,
+        -64
+      ],
+      "id": "07787663-4b7f-43f0-acd9-86516f62714b",
+      "name": "Search records3",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AEmDHNHfSpYQRGvg",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Sen bir Digital Twin AI sistemisin.\n\nAşağıdaki kullanıcı verilerini analiz ederek kısa bir günlük rapor oluştur.\n\nVeriler:\n{{ JSON.stringify($json) }}\n\nŞunları yaz:\n1. Günün özeti\n2. Önemli olaylar\n3. Yapılması gerekenler\n4. Kullanıcının ruh hali\n5. Yarın için öneriler\n\nKısa ve profesyonel yaz.",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        112,
+        -144
+      ],
+      "id": "a88e6c8e-aaf2-4f67-821d-bf873f9edfe5",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        128,
+        96
+      ],
+      "id": "549cbf8d-bf28-42f1-ab06-2ed0618adc08",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "DyfxKzFfFudR57Za",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "apphDpDGsHmRVNCC8",
+          "mode": "list",
+          "cachedResultName": "DigitalTwin_AI_System",
+          "cachedResultUrl": "https://airtable.com/apphDpDGsHmRVNCC8"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbliF2zWyLKtYC3Ty",
+          "mode": "list",
+          "cachedResultName": "Daily_Weekly_Reports",
+          "cachedResultUrl": "https://airtable.com/apphDpDGsHmRVNCC8/tbliF2zWyLKtYC3Ty"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "Daily Report",
+            "ReportType": "Daily",
+            "ReportText": "={{$json.output}}",
+            "StartDate": "={{new Date().toISOString()}}",
+            "EndDate": "={{new Date().toISOString()}}",
+            "CreatedAt ": "={{new Date().toISOString()}}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ReportType",
+              "displayName": "ReportType",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Daily",
+                  "value": "Daily"
+                },
+                {
+                  "name": "Weekly",
+                  "value": "Weekly"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ReportText",
+              "displayName": "ReportText",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "StartDate",
+              "displayName": "StartDate",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "EndDate",
+              "displayName": "EndDate",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "CreatedAt ",
+              "displayName": "CreatedAt ",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        432,
+        -144
+      ],
+      "id": "fed739d5-0d16-4132-8dee-c78dc9669bda",
+      "name": "Create a record",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AEmDHNHfSpYQRGvg",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -480,
+        -336
+      ],
+      "id": "5a5ac342-db2e-4cd2-8139-06a3d4067310",
+      "name": "Merge"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -272,
+        -224
+      ],
+      "id": "b8fbe3f1-661f-48a9-9ced-836b0bb4701f",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -80,
+        -144
+      ],
+      "id": "d56ddb69-79b9-4d91-bc22-0378ad5a7aac",
+      "name": "Merge2"
+    },
+    {
+      "parameters": {
+        "chatId": "8476086508",
+        "text": "=📊 Günlük Digital Twin Raporu  {{$json.fields.ReportText}}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        640,
+        -144
+      ],
+      "id": "b235597a-3acc-4261-871b-6b72fd826482",
+      "name": "Send a text message",
+      "webhookId": "064448c4-0556-445c-b63f-38e4a81ddebb",
+      "credentials": {
+        "telegramApi": {
+          "id": "Nfc6jsHVIyt0ukOu",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Search records",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Search records1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search records": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search records1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Search records2": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Search records3": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Create a record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a record": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "86b23587-238f-414d-8adc-797aa82d03ac",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "33da6ec3e0a540eab444625c7ceb296e1d3bdc29f4cc7300e24c90da22661083"
+  },
+  "id": "JbnLkmXlto5Zo6h5",
+  "tags": []
+}
