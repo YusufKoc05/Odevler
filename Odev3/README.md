@@ -1,4 +1,4 @@
-# BinaryAnalyzer
+﻿# BinaryAnalyzer
 
 BinaryAnalyzer, C++ ve Nesne Yönelimli Programlama (OOP) kullanılarak geliştirilmiş savunma odaklı statik malware analiz aracıdır.
 
