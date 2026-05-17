@@ -1,0 +1,16 @@
+BinaryAnalyzer Proje Videosu
+
+Bu videoda C++ ve Object-Oriented Programming kullanılarak geliştirilen BinaryAnalyzer isimli static malware analysis sisteminin çalışma mantığı, parser mimarisi, PE ve ELF executable analiz sistemi, suspicious API detection yapısı, malware risk scoring sistemi ve GitHub proje yapısı gösterilmektedir.
+
+Projede:
+- PE ve ELF parsing
+- Static binary analysis
+- Suspicious API detection
+- Malware risk scoring
+- Command-line desteği
+- Modüler OOP mimarisi
+
+başarıyla uygulanmıştır.
+
+YouTube Video Linki:
+https://www.youtube.com/watch?v=NIMJDpP75yM
