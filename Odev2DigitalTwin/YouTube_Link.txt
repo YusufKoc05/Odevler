@@ -1,0 +1,6 @@
+Digital Twin AI Proje Videosu
+
+Bu videoda n8n Cloud kullanılarak geliştirilen Digital Twin AI Automation System projesinin çalışma mantığı, workflow yapıları, Telegram entegrasyonu, Gmail analizi, Google Drive doküman sistemi, Calendar entegrasyonu ve günlük raporlama sistemi gösterilmektedir.
+
+YouTube Video Linki:
+https://www.youtube.com/watch?v=sj11mjvWTt8
